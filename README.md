@@ -1,7 +1,8 @@
 # DeepGalerkinSPDE
 Deep Gaussian processes based on the stochastic partial differential equations (SPDE)  form, implemented in Jax. 
 This repository contains codes from the paper:
-"Fast optimize-and-sample method for differentiable Galerkin approximations of multi-layered Gaussian process priors"
+"Fast optimize-and-sample method for differentiable Galerkin approximations of multi-layered Gaussian process priors" 
+(Paper presented at 25th [International Conference on Information Fusion](https://www.fusion2022.se) in Linköping, the Fusion Capital of Sweden.)
 
 
 ![one_d_MLSP2021](images/one_d_AISTATS2022.png)
