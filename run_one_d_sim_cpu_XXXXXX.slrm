@@ -1,0 +1,45 @@
+#!/usr/bin/bash
+#SBATCH --time=5-0 #time-requested
+#SBATCH --mem-per-cpu=16G #memory
+#SBATCH --gres=gpu:v100:1
+#SBATCH --output dod-%J.log
+##First activate virtual environment
+module load cuda/10.2.89 # No need to load cuda
+source /home/${USER}/.bashrc
+source ./venv/bin/activate
+##export XLA_FLAGS="--xla_gpu_cuda_data_dir=/usr/local/cuda" 
+
+
+optimizer=$1
+shape=$2
+softmax=$3
+kappa0=$4
+learn=$5
+meas_samples=$6
+steps=$7
+cuda=$8
+prior=$9
+#cg=${9:-100} #Default value of cg is 100
+
+if [ $softmax == "softmax" ];then
+    softmaxflag="--softmax"
+else
+    softmaxflag="--nosoftmax"
+fi
+
+if [ $cuda == "cuda" ];then
+	cudaflag="--cuda"
+else
+	cudaflag="--nocuda"
+fi
+
+echo "Present working folder : $(pwd)"
+echo "Optimizer : $optimizer"
+echo "Shape : $shape"
+echo "$softmaxflag"
+echo "kappa0 : $kappa0"
+echo "learn_step : $learn"
+echo "$cudaflag"
+
+python ./Examples/optimize_denoising_one_D.py  --optimizer=$optimizer --shape=$shape $softmaxflag --kappa0=$kappa0 --learn=$learn --meas-samples=$meas_samples --steps=$steps --prior=$prior $cudaflag
+

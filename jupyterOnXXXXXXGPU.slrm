@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+#SBATCH --time=5-0 #time-requested
+#SBATCH --mem-per-cpu=12G # memory
+#SBATCH --gres=gpu:v100:1
+#SBATCH --job-name jupyter-notebook
+#SBATCH --output jupyter-notebook-%J.log
+
+# get tunneling info
+XDG_RUNTIME_DIR=""
+node=$(hostname -s)
+user=$(whoami)
+cluster="xxxxx"
+port=$(shuf -i 6000-9999 -n 1)
+# port=8889
+module load cuda/10.2.89 # cuda does not need to be loaded as the /usr/local/cuda is already cuda 110
+source /home/${USER}/.bashrc
+source ./venv/bin/activate
+
+
+# print tunneling instructions jupyter-log
+echo -e "
+# Command to create ssh tunnel:
+ssh -N -f -L ${port}:${node}.int.${cluster}.otlaa.if:${port} ${user}@${cluster}.otlaa.if
+
+Use a Browser on your local machine to go to:
+localhost:${port}  (prefix w/ https:// if using password)
+"
+
+# load modules or conda environments here
+# module load anaconda3
+# conda activate CUPYrc
+
+# Run Jupyter
+jupyter-notebook --no-browser --port=${port} --ip=${node}
